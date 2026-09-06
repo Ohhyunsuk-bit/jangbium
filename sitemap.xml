@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://jangbium.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://jangbium.com/coolprep.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://jangbium.com/orapang.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://jangbium.com/plenvu.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ohhyunsuk-bit.github.io/jangbium/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://ohhyunsuk-bit.github.io/jangbium/coolprep.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ohhyunsuk-bit.github.io/jangbium/orapang.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://ohhyunsuk-bit.github.io/jangbium/plenvu.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
 </urlset>
