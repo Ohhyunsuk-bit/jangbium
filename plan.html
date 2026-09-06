@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>복용 시간표 | 장비움</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="장정결제 복용 시간표">
+<meta property="og:type" content="website">
+<meta property="og:title" content="장정결제 복용 시간표 | 장비움">
+<meta property="og:description" content="검사 시간에 맞춘 장정결제 복용 시간표입니다.">
+<meta property="og:image" content="https://jangbium.com/og.png">
+<link rel="stylesheet" href="css/style.css">
+<script type="module" src="js/app.js"></script>
+</head>
+<body data-page="plan">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./">장비움<small>장정결 스케줄러</small></a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="plan" aria-live="polite">
+    <p class="muted">시간표를 만드는 중…</p>
+  </div>
+</main>
+
+<div class="bar" id="bar" hidden>
+  <div class="wrap">
+    <button type="button" class="btn" id="btn-ics">캘린더 저장</button>
+    <button type="button" class="btn btn--primary" id="btn-share">링크 공유</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>이 도구는 정보 제공 목적이며 진단·처방이 아닙니다. 병원에서 받은 안내가 있으면 그것을 따르세요.</p>
+    <p id="source-line">소화기내과 전문의 감수</p>
+  </div>
+</footer>
+</body>
+</html>
