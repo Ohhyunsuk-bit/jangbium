@@ -1,34 +1,37 @@
+/* 팔레트: 다다미·목재·간접조명의 온기(라이트) / 어두운 나무와 등불(다크). 대비는 본문 텍스트 기준 WCAG AA 이상 유지. */
 :root {
-  --bg: #f7f6f2;
-  --surface: #ffffff;
-  --ink: #1f2933;
-  --ink-2: #52606d;
-  --line: #e4e7eb;
-  --accent: #1f6f8b;
-  --accent-ink: #ffffff;
-  --diet: #6b8f3f;
-  --dose: #1f6f8b;
-  --fast: #b7791f;
-  --exam: #9b2c2c;
-  --warn-bg: #fff7e6;
-  --warn-ink: #7a4b00;
+  --bg: #f3ebdc;
+  --glow: #fff5e1;
+  --surface: #fdf8ef;
+  --ink: #2a1f16;
+  --ink-2: #6e5c4c;
+  --line: #e4d7c1;
+  --accent: #8a5a2b;
+  --accent-ink: #fff8ee;
+  --diet: #5d8a3c;
+  --dose: #8a5a2b;
+  --fast: #b8862d;
+  --exam: #a8433a;
+  --warn-bg: #fbeed3;
+  --warn-ink: #6b4300;
   --radius: 14px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow: 0 1px 2px rgba(60, 40, 20, 0.08);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #121417;
-    --surface: #1b1f24;
-    --ink: #e6e9ec;
-    --ink-2: #a3adb8;
-    --line: #2b323a;
-    --accent: #5fb3d1;
-    --accent-ink: #0b1116;
-    --diet: #9ccc65;
-    --dose: #5fb3d1;
+    --bg: #17110d;
+    --glow: #3b2a1b;
+    --surface: #241b15;
+    --ink: #f1e6d4;
+    --ink-2: #b5a390;
+    --line: #3a2d23;
+    --accent: #dca960;
+    --accent-ink: #1a120c;
+    --diet: #9dbb6a;
+    --dose: #dca960;
     --fast: #e0b25a;
-    --exam: #ef7f7f;
-    --warn-bg: #3a2c10;
+    --exam: #ef8a78;
+    --warn-bg: #3d2b12;
     --warn-ink: #ffd88a;
     --shadow: none;
   }
@@ -38,7 +41,10 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg);
+  /* 위쪽에서 내려오는 은은한 등불 빛 */
+  background-image: radial-gradient(120% 60% at 50% 0%, var(--glow) 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
   color: var(--ink);
   font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
   padding-bottom: 96px; /* 하단 고정 바 공간 */
