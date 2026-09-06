@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jangbium.com/sitemap.xml
