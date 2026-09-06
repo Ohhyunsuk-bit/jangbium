@@ -28,6 +28,7 @@ test('포맷: formatTime/formatDateKo/toParam/parseParam', () => {
   assert.equal(parseParam(''), null);
   assert.equal(parseParam(null), null);
   assert.equal(parseParam('2026-13-40T99:99'), null);
+  assert.equal(parseParam('2026-02-31T09:00'), null);
 });
 
 test('09:00 쿨프렙 → 2차 05:30~07:00, 1차 전날 18:30', () => {
@@ -175,6 +176,7 @@ test('경고: 2차 시작이 이미 지난 임박 검사 → TOO_SOON', () => {
 
 test('잘못된 입력은 throw', () => {
   assert.throws(() => run(at(2026, 9, 10, 9, 0), 'nope'), /unknown product/);
+  assert.throws(() => run(at(2026, 9, 10, 9, 0), 'constructor'), /unknown product/);
   assert.throws(() => computeSchedule({ examAt: new Date('x'), productId: 'coolprep' }), /invalid examAt/);
   assert.throws(() => computeSchedule({ examAt: '2026-09-10', productId: 'coolprep' }), /invalid examAt/);
 });

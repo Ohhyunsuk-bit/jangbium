@@ -95,7 +95,7 @@ function pushDose(push, steps, start, label) {
 }
 
 export function computeSchedule({ examAt, productId, now = new Date() }) {
-  const product = PRODUCTS[productId];
+  const product = Object.hasOwn(PRODUCTS, productId) ? PRODUCTS[productId] : undefined;
   if (!product) throw new Error(`unknown product: ${productId}`);
   if (!(examAt instanceof Date) || Number.isNaN(examAt.getTime())) throw new Error('invalid examAt');
 

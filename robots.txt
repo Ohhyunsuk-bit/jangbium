@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /plan.html
 Sitemap: https://jangbium.com/sitemap.xml

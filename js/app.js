@@ -39,7 +39,7 @@ function invalidMarkup() {
   return `
     <section class="card">
       <h1>시간표를 만들 수 없습니다</h1>
-      <p class="muted">링크가 잘못되었거나 만료되었습니다. 제품을 다시 선택해 주세요.</p>
+      <p class="muted">링크가 잘못되었습니다. 제품을 다시 선택해 주세요.</p>
       <a class="btn btn--primary" href="./">제품 선택으로</a>
     </section>`;
 }
@@ -131,13 +131,20 @@ function initPlanPage() {
   const root = document.getElementById('plan');
   const bar = document.getElementById('bar');
 
-  if (!PRODUCTS[productId] || !examAt) {
+  if (!Object.hasOwn(PRODUCTS, productId) || !examAt) {
     root.innerHTML = invalidMarkup();
     bar.hidden = true;
     return;
   }
 
-  const result = computeSchedule({ examAt, productId });
+  let result;
+  try {
+    result = computeSchedule({ examAt, productId });
+  } catch {
+    root.innerHTML = invalidMarkup();
+    bar.hidden = true;
+    return;
+  }
   const { meta } = result;
   document.title = `${meta.product.short} 복용 시간표 · ${formatDateKo(examAt)} ${formatTime(examAt)} | 장비움`;
   root.innerHTML = renderPlan(result);
