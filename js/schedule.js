@@ -78,5 +78,76 @@ export function computeDoseTimes({ examAt, product }) {
   return { dose1Start, dose1End, dose2Start, dose2End };
 }
 
-// computeSchedule은 Task 3에서 추가한다. CLEAR_LIQUIDS import는 그때 사용.
-export { CLEAR_LIQUIDS as _clearLiquids };
+function pushDose(push, steps, start, label) {
+  let t = start;
+  steps.forEach((st, i) => {
+    const end = addMinutes(t, st.minutes);
+    push({
+      at: t,
+      end,
+      kind: 'dose',
+      title: `${label} ${i + 1}/${steps.length}: ${st.title}`,
+      detail: st.detail,
+      calendar: i === 0,
+    });
+    t = end;
+  });
+}
+
+export function computeSchedule({ examAt, productId, now = new Date() }) {
+  const product = PRODUCTS[productId];
+  if (!product) throw new Error(`unknown product: ${productId}`);
+  if (!(examAt instanceof Date) || Number.isNaN(examAt.getTime())) throw new Error('invalid examAt');
+
+  const [steps1, steps2] = product.doses;
+  const { dose1Start, dose1End, dose2Start, dose2End } = computeDoseTimes({ examAt, product });
+  const prevDay = addDays(startOfDay(examAt), -1);
+
+  const events = [];
+  const push = (e) => events.push({ calendar: false, ...e, day: sameDate(e.at, examAt) ? 'D0' : 'D-1' });
+
+  for (const d of product.diet) {
+    const deadline =
+      d.deadlineBeforeDose1Min != null ? addMinutes(dose1Start, -d.deadlineBeforeDose1Min)
+      : d.beforeDose1Min != null ? addMinutes(dose1Start, -d.beforeDose1Min)
+      : null;
+    const at = d.clock ? atClock(prevDay, d.clock) : deadline;
+    push({
+      at,
+      kind: 'diet',
+      title: d.title,
+      detail: d.detail.replace('{deadline}', deadline ? formatTime(deadline) : ''),
+      calendar: d.slot === 'breakfast',
+    });
+  }
+
+  pushDose(push, steps1, dose1Start, '1차 복용');
+  push({ at: dose1End, kind: 'fast', title: '1차 완료 — 이후 맑은 음료만', detail: CLEAR_LIQUIDS });
+  pushDose(push, steps2, dose2Start, '2차 복용');
+  push({ at: dose2End, kind: 'fast', title: '2차 완료 — 검사까지 금식', detail: '물을 포함해 아무것도 드시지 마세요.' });
+  push({ at: examAt, kind: 'exam', title: '대장내시경 검사', detail: '검사 시작 시각입니다. 늦지 않게 도착하세요.' });
+
+  events.sort((a, b) => a.at - b.at);
+
+  const warnings = [];
+  if (examAt < now) {
+    warnings.push({ code: 'PAST', message: '검사 시각이 이미 지났습니다. 참고용으로만 보세요.' });
+  } else if (dose2Start < now) {
+    warnings.push({ code: 'TOO_SOON', message: '2차 복용 시작 시각이 이미 지났습니다. 병원에 바로 문의하세요.' });
+  }
+  if (dose2Start.getHours() < EARLY_MORNING_HOUR) {
+    warnings.push({ code: 'EARLY_MORNING', message: `2차 복용이 새벽 ${formatTime(dose2Start)}에 시작됩니다. 알람을 맞춰 두세요.` });
+  }
+  const h = examAt.getHours();
+  if (h < 6 || h >= 20) {
+    warnings.push({ code: 'ODD_TIME', message: '검사 시각이 일반적인 진료 시간을 벗어났습니다. 입력한 시간이 맞는지 확인하세요.' });
+  }
+  if (product.maxIntervalHours != null && (dose2Start - dose1Start) / 3_600_000 > product.maxIntervalHours) {
+    warnings.push({
+      code: 'INTERVAL_LONG',
+      message: `1차와 2차 복용 간격이 ${product.maxIntervalHours}시간을 넘습니다. 병원에서 안내한 복용 시각이 있으면 그것을 따르세요.`,
+    });
+  }
+
+  return { events, warnings, meta: { product, examAt, dose1Start, dose1End, dose2Start, dose2End } };
+}
