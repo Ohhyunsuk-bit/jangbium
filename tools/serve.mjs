@@ -25,7 +25,7 @@ http.createServer(async (req, res) => {
     let rel = decodeURIComponent(url.pathname);
     if (rel.endsWith('/')) rel += 'index.html';
     const file = path.join(ROOT, rel);
-    if (!file.startsWith(ROOT)) throw new Error('forbidden');
+    if (file !== ROOT && !file.startsWith(ROOT + path.sep)) throw new Error('forbidden');
     const s = await stat(file);
     if (!s.isFile()) throw new Error('not file');
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] ?? 'application/octet-stream' });
