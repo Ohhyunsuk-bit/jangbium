@@ -30,4 +30,6 @@
 
 ## 배포
 
-Cloudflare Pages (프레임워크 없음, 빌드 명령 비움, 출력 디렉터리 `/`). Web Analytics는 Pages 프로젝트 설정에서 켠다.
+Cloudflare Pages (프레임워크 없음). **빌드 명령**: `rm -rf docs test tools .claude` — 설계 문서·테스트·로컬 도구는 공개 배포에서 제외한다. 출력 디렉터리 `/`. Web Analytics는 Pages 프로젝트 설정에서 켠다.
+
+**런칭 게이트**: 페이지의 canonical·og:image가 `https://jangbium.com`으로 고정되어 있으므로, Custom domain이 활성화되고 카카오톡 링크 디버거에서 og:image가 200을 반환하는 것을 확인한 뒤에만 링크를 외부에 공개한다. `*.pages.dev` 주소는 공개하지 않는다.
