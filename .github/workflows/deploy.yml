@@ -1,0 +1,30 @@
+name: Deploy to GitHub Pages
+
+# main에 push될 때마다 자동으로 실행된다.
+# tools/deploy-pages.sh가 손으로 하던 일(배포 파일만 골라 gh-pages에 올리기)을 그대로 대신한다.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 배포할 파일만 따로 모으기
+        run: |
+          mkdir -p /tmp/deploy
+          cp index.html coolprep.html orapang.html plenvu.html plan.html og.png robots.txt sitemap.xml README.md /tmp/deploy/
+          cp -r css js /tmp/deploy/
+          touch /tmp/deploy/.nojekyll
+
+      - name: gh-pages 브랜치로 배포
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/deploy
+          publish_branch: gh-pages
