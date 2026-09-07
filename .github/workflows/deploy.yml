@@ -10,7 +10,18 @@ permissions:
   contents: write
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 테스트 실행
+        run: npm test
+
   deploy:
+    needs: test # 테스트가 통과해야만 배포 단계로 넘어간다
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
