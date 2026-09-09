@@ -32,4 +32,4 @@ fi
 SRC_SHA="$(git -C "$ROOT" rev-parse --short HEAD)"
 git commit -q -m "deploy: main ${SRC_SHA}"
 git push -q origin gh-pages
-echo "배포됨: gh-pages $(git rev-parse --short HEAD) (main ${SRC_SHA}) → https://ohhyunsuk-bit.github.io/jangbium/"
+echo "배포됨: gh-pages $(git rev-parse --short HEAD) (main ${SRC_SHA}) → https://jangbium.github.io/"

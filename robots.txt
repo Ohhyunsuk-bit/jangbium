@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://ohhyunsuk-bit.github.io/jangbium/sitemap.xml
+Sitemap: https://jangbium.github.io/sitemap.xml
