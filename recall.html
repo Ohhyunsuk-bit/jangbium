@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대장내시경 추적검사 계산기 | 장비움</title>
+<meta name="description" content="용종 절제 소견을 입력하면 2022년 한국 지침 기준 다음 대장내시경 추적검사 시기를 계산합니다. 결과지 문구와 환자용 QR 링크를 만듭니다.">
+<link rel="canonical" href="https://jangbium.github.io/recall.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="대장내시경 추적검사 계산기 | 장비움">
+<meta property="og:description" content="용종 절제 소견으로 다음 검사 시기를 계산합니다.">
+<meta property="og:image" content="https://jangbium.github.io/og.png">
+<meta property="og:url" content="https://jangbium.github.io/recall.html">
+<link rel="stylesheet" href="css/style.css">
+<script type="module" src="js/recall-app.js"></script>
+</head>
+<body data-page="recall">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./">장비움<small>추적검사 계산기</small></a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>대장내시경 다음 검사 시기</h1>
+    <p class="muted">이번 검사 소견을 입력하면 2022년 한국 폴립절제 후 추적 대장내시경 검사 지침 기준으로 다음 검사 시기를 계산합니다.</p>
+  </section>
+
+  <form id="recall-form" class="card" novalidate>
+    <h2>이번 검사</h2>
+    <div class="row">
+      <div class="field">
+        <label for="r-date">검사일</label>
+        <input type="date" id="r-date" name="r-date">
+      </div>
+      <div class="field">
+        <label for="r-prep">장정결</label>
+        <select id="r-prep" name="r-prep">
+          <option value="0" selected>적절</option>
+          <option value="1">불량</option>
+        </select>
+      </div>
+    </div>
+
+    <h2>선종(adenoma)</h2>
+    <div class="row">
+      <div class="field">
+        <label for="r-count">개수</label>
+        <input type="number" id="r-count" name="r-count" min="0" max="99" value="0" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="r-size">가장 큰 크기(mm)</label>
+        <input type="number" id="r-size" name="r-size" min="0" max="99" value="0" inputmode="numeric">
+      </div>
+    </div>
+    <div class="chips" role="group" aria-label="선종 조직 소견">
+      <button type="button" class="chip" data-flag="villous">관융모 또는 융모</button>
+      <button type="button" class="chip" data-flag="highGrade">고도이형성</button>
+    </div>
+
+    <h2>톱니용종(serrated polyp)</h2>
+    <div class="chips" role="group" aria-label="톱니용종 소견">
+      <button type="button" class="chip" data-flag="tsa">전통톱니선종(TSA)</button>
+      <button type="button" class="chip" data-flag="sslDysplasia">이형성 동반 SSL</button>
+      <button type="button" class="chip" data-flag="serrated10">톱니용종 10mm 이상</button>
+    </div>
+    <div class="field">
+      <label for="r-ssl">SSL(무경성 톱니병변) 개수</label>
+      <select id="r-ssl" name="r-ssl">
+        <option value="0" selected>없음</option>
+        <option value="1">1~2개</option>
+        <option value="3">3~4개</option>
+        <option value="5">5개 이상</option>
+      </select>
+    </div>
+
+    <h2>절제</h2>
+    <div class="chips" role="group" aria-label="절제 소견">
+      <button type="button" class="chip" data-flag="piecemeal">20mm 이상 분할절제</button>
+    </div>
+  </form>
+
+  <section class="card result" id="recall-result" aria-live="polite"></section>
+
+  <section class="card">
+    <h2>이 계산기가 하는 일</h2>
+    <p>2022년 한국 폴립절제 후 추적 대장내시경 검사 지침(Table 4)의 추적 간격을 그대로 계산합니다. 근거수준·권고등급이 서로 다른 여러 소견 중 가장 짧은 간격을 우선합니다.</p>
+    <p class="muted">병원에서 개별적으로 정한 추적 시기가 있으면 그것이 우선입니다. 이 도구는 진단·처방이 아닙니다.</p>
+  </section>
+</main>
+
+<div class="bar" id="bar" hidden>
+  <div class="wrap">
+    <button type="button" class="btn" id="btn-copy">문구 복사</button>
+    <button type="button" class="btn btn--primary" id="btn-patient-link">환자용 링크</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>이 도구는 정보 제공 목적이며 진단·처방이 아닙니다. 병원에서 받은 안내가 있으면 그것을 따르세요.</p>
+    <p>소화기내과 전문의 감수 · 근거: <a href="https://www.ekjm.org/journal/view.php?number=25839" rel="noopener" target="_blank">폴립 절제 후 추적 대장내시경 검사 진료 지침 개정안 2022</a></p>
+  </div>
+</footer>
+</body>
+</html>
