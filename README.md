@@ -21,7 +21,11 @@
 - `js/schedule.js` — 순수 계산: 검사 시각 → 1차·2차 복용 시각, 타임라인, 경고.
 - `js/ics.js` — 캘린더(.ics) 생성.
 - `js/app.js` — 폼과 결과 렌더, 공유·저장 버튼.
-- `index.html`, `coolprep.html`, `orapang.html`, `plenvu.html`, `plan.html`
+- `js/ui-utils.js` — esc·toast·share 등 공용 DOM 도우미(app.js·recall-app.js 공유).
+- `js/recall.js` — 순수 계산: 2022 한국 지침 Table 4 기준 추적 간격.
+- `js/recall-app.js` — 추적검사 계산기 폼과 결과 렌더.
+- `js/vendor/qrcode.js` — 벤더링한 QR 인코더(MIT, 손으로 고치지 않음).
+- `index.html`, `coolprep.html`, `orapang.html`, `plenvu.html`, `plan.html`, `recall.html`, `recall-plan.html`
 
 ## 규칙 요약
 

@@ -1,6 +1,7 @@
 import { PRODUCTS } from './protocols.js';
 import { computeSchedule, parseParam, toParam, formatTime, formatDateKo, addDays, startOfDay } from './schedule.js';
 import { buildIcs } from './ics.js';
+import { esc, toast, share } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
@@ -29,10 +30,6 @@ function initProductForm() {
     const t = `${dateEl.value}T${timeEl.value.slice(0, 5)}`;
     location.href = `plan.html?p=${encodeURIComponent(productId)}&t=${encodeURIComponent(t)}`;
   });
-}
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 function invalidMarkup() {
@@ -82,14 +79,6 @@ function renderPlan({ events, warnings, meta }) {
     </div>`;
 }
 
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('is-on');
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.classList.remove('is-on'), 2200);
-}
-
 function downloadIcs({ events, meta, tParam }) {
   const ics = buildIcs({ events, uidSeed: `${meta.product.id}-${tParam}` });
   const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
@@ -102,25 +91,6 @@ function downloadIcs({ events, meta, tParam }) {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   toast('캘린더 파일을 내려받았습니다');
-}
-
-async function share({ meta }) {
-  const title = `${meta.product.name} 복용 시간표 (${formatDateKo(meta.examAt)} ${formatTime(meta.examAt)} 검사)`;
-  const url = location.href;
-  if (navigator.share) {
-    try {
-      await navigator.share({ title, text: title, url });
-      return;
-    } catch (err) {
-      if (err && err.name === 'AbortError') return;
-    }
-  }
-  try {
-    await navigator.clipboard.writeText(url);
-    toast('링크를 복사했습니다');
-  } catch {
-    toast('주소창의 링크를 복사해 주세요');
-  }
 }
 
 function initPlanPage() {
@@ -152,5 +122,8 @@ function initPlanPage() {
   src.innerHTML = `소화기내과 전문의 감수 · 복용법 출처: <a href="${esc(meta.product.source.url)}" rel="noopener" target="_blank">${esc(meta.product.source.label)}</a>`;
   bar.hidden = false;
   document.getElementById('btn-ics').addEventListener('click', () => downloadIcs({ events: result.events, meta, tParam: toParam(examAt) }));
-  document.getElementById('btn-share').addEventListener('click', () => share({ meta }));
+  document.getElementById('btn-share').addEventListener('click', () => share({
+    title: `${meta.product.name} 복용 시간표 (${formatDateKo(examAt)} ${formatTime(examAt)} 검사)`,
+    url: location.href,
+  }));
 }
