@@ -159,3 +159,39 @@ test('buildReportText: 절제한 용종 없음', () => {
   const text = buildReportText(computeRecall(base), base.examDate);
   assert.match(text, /절제한 용종 없음/);
 });
+
+import { parseRecallParams, buildRecallQuery } from '../js/recall.js';
+
+test('buildRecallQuery ↔ parseRecallParams 왕복', () => {
+  const input = {
+    examDate: at(2026, 9, 9),
+    adenomaCount: 4,
+    maxSizeMm: 8,
+    flags: new Set(['villous', 'piecemeal']),
+    sslBand: '3',
+    prepInadequate: true,
+  };
+  const query = buildRecallQuery(input);
+  const parsed = parseRecallParams(new URLSearchParams(query));
+  assert.equal(formatDateOnly(parsed.examDate), '2026-09-09');
+  assert.equal(parsed.adenomaCount, 4);
+  assert.equal(parsed.maxSizeMm, 8);
+  assert.deepEqual([...parsed.flags].sort(), ['piecemeal', 'villous']);
+  assert.equal(parsed.sslBand, '3');
+  assert.equal(parsed.prepInadequate, true);
+});
+
+test('buildRecallQuery: 기본값(플래그 없음, ssl 0, 불량 아님)은 짧게', () => {
+  const query = buildRecallQuery({ examDate: at(2026, 9, 9), adenomaCount: 0, maxSizeMm: 0, flags: new Set(), sslBand: '0', prepInadequate: false });
+  assert.equal(query, 'd=2026-09-09&n=0&s=0');
+});
+
+test('parseRecallParams: 잘못된 값은 null', () => {
+  const bad = (s) => parseRecallParams(new URLSearchParams(s));
+  assert.equal(bad(''), null); // 날짜 없음
+  assert.equal(bad('d=2026-13-01&n=0&s=0'), null); // 잘못된 날짜
+  assert.equal(bad('d=2026-09-09&n=abc&s=0'), null); // 개수 아님
+  assert.equal(bad('d=2026-09-09&n=0&s=0&f=Z'), null); // 알 수 없는 플래그
+  assert.equal(bad('d=2026-09-09&n=0&s=0&ssl=2'), null); // 잘못된 ssl 구간
+  assert.equal(bad('d=2026-09-09&n=0&s=0&b=9'), null); // 잘못된 장정결 값
+});

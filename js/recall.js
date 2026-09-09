@@ -166,3 +166,44 @@ export function buildReportText(result, examDate) {
     : `${formatYearMonthKo(result.dates[0])}`;
   return `${result.reasons.join(' ')} 2022 한국 폴립절제 후 추적 대장내시경 검사 지침에 따라 ${when} 추적 대장내시경을 권고합니다 (${whenDate}).`;
 }
+
+export function parseRecallParams(params) {
+  const examDate = parseDateOnly(params.get('d'));
+  if (!examDate) return null;
+
+  const nRaw = params.get('n');
+  if (!/^\d{1,3}$/.test(nRaw ?? '')) return null;
+  const adenomaCount = Number(nRaw);
+
+  const sRaw = params.get('s');
+  if (!/^\d{1,3}$/.test(sRaw ?? '')) return null;
+  const maxSizeMm = Number(sRaw);
+
+  const fRaw = params.get('f') ?? '';
+  const validChars = new Set(Object.values(FLAG_CHARS));
+  if ([...fRaw].some((c) => !validChars.has(c))) return null;
+  const flags = new Set();
+  for (const [key, ch] of Object.entries(FLAG_CHARS)) {
+    if (fRaw.includes(ch)) flags.add(key);
+  }
+
+  const sslBand = params.get('ssl') ?? '0';
+  if (!SSL_BANDS.includes(sslBand)) return null;
+
+  const bRaw = params.get('b') ?? '0';
+  if (bRaw !== '0' && bRaw !== '1') return null;
+
+  return { examDate, adenomaCount, maxSizeMm, flags, sslBand, prepInadequate: bRaw === '1' };
+}
+
+export function buildRecallQuery(input) {
+  const p = new URLSearchParams();
+  p.set('d', formatDateOnly(input.examDate));
+  p.set('n', String(input.adenomaCount));
+  p.set('s', String(input.maxSizeMm));
+  const f = Object.entries(FLAG_CHARS).filter(([key]) => input.flags.has(key)).map(([, ch]) => ch).join('');
+  if (f) p.set('f', f);
+  if (input.sslBand && input.sslBand !== '0') p.set('ssl', input.sslBand);
+  if (input.prepInadequate) p.set('b', '1');
+  return p.toString();
+}
