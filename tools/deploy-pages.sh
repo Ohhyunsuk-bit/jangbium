@@ -5,7 +5,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WT="$ROOT/.deploy-pages"
-FILES=(index.html coolprep.html orapang.html plenvu.html plan.html og.png robots.txt sitemap.xml README.md)
+FILES=(index.html coolprep.html orapang.html plenvu.html plan.html recall.html recall-plan.html og.png robots.txt sitemap.xml README.md)
 
 cd "$ROOT"
 git fetch -q origin gh-pages

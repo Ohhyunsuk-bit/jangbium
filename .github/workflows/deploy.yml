@@ -29,7 +29,7 @@ jobs:
       - name: 배포할 파일만 따로 모으기
         run: |
           mkdir -p /tmp/deploy
-          cp index.html coolprep.html orapang.html plenvu.html plan.html og.png robots.txt sitemap.xml README.md /tmp/deploy/
+          cp index.html coolprep.html orapang.html plenvu.html plan.html recall.html recall-plan.html og.png robots.txt sitemap.xml README.md /tmp/deploy/
           cp -r css js /tmp/deploy/
           touch /tmp/deploy/.nojekyll
 
