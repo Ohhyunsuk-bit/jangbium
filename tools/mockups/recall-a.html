@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시안 A · 체크리스트형 (의사용 즉시 결과)</title>
+<style>
+/* 팔레트: 황혼 하늘(라벤더→복숭아)과 표지판 파랑, 눈산의 청회색. 다크는 저녁 하늘과 등불 호박색. 본문 대비는 WCAG AA 이상 유지. */
+:root {
+  --sky-1: #fbe0d3;
+  --sky-2: #f3d3dc;
+  --sky-3: #e4dcf1;
+  --sky-end: #f7efe9;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-solid: #ffffff;
+  --card-line: rgba(255, 255, 255, 0.9);
+  --ink: #232741;
+  --ink-2: #5f6582;
+  --line: #dcd6e6;
+  --accent: #1f4fbf;
+  --accent-ink: #ffffff;
+  --accent-glow: rgba(31, 79, 191, 0.35);
+  --ridge: #7b83a8;
+  --snow: #ffffff;
+  --diet: #2f9a68;
+  --dose: #1f4fbf;
+  --fast: #d9962a;
+  --exam: #d64545;
+  --warn-bg: #fff1d6;
+  --warn-ink: #6b4300;
+  --toast-bg: #232741;
+  --toast-ink: #ffffff;
+  --radius: 14px;
+  --shadow: 0 8px 24px rgba(60, 50, 90, 0.10);
+  --shadow-sm: 0 2px 8px rgba(60, 50, 90, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sky-1: #e9b9c2;
+    --sky-2: #4a3a66;
+    --sky-3: #2b2d4d;
+    --sky-end: #1c1f33;
+    --surface: #262a44;
+    --surface-solid: #262a44;
+    --card-line: #3a3f5e;
+    --ink: #f2eef8;
+    --ink-2: #aeb0c8;
+    --line: #3a3f5e;
+    --accent: #f2b95a;
+    --accent-ink: #2a1d05;
+    --accent-glow: rgba(242, 185, 90, 0.45);
+    --ridge: #5a5680;
+    --snow: #f6eef8;
+    --diet: #7fd39f;
+    --dose: #f2b95a;
+    --fast: #ffd27a;
+    --exam: #ff7a7a;
+    --warn-bg: #3d3116;
+    --warn-ink: #ffd88a;
+    --toast-bg: #f2eef8;
+    --toast-ink: #1c1f33;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    --shadow-sm: none;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--sky-end);
+  /* 위에서 아래로 내려오는 황혼 하늘 */
+  background-image: linear-gradient(180deg, var(--sky-3) 0%, var(--sky-2) 32%, var(--sky-1) 60%, var(--sky-end) 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--ink);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  padding-bottom: 96px; /* 하단 고정 바 공간 */
+}
+@media (prefers-color-scheme: dark) {
+  body { background-image: linear-gradient(180deg, var(--sky-1) 0%, #8b6f9e 14%, var(--sky-2) 26%, var(--sky-3) 40%, var(--sky-end) 60%); }
+}
+a { color: var(--accent); }
+h1, h2, h3 { line-height: 1.3; margin: 0 0 0.5em; }
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.2rem; }
+p { margin: 0 0 1em; }
+.muted { color: var(--ink-2); }
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+.site-header { padding: 14px 0; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; }
+.brand { font-weight: 800; text-decoration: none; color: var(--ink); font-size: 1.15rem; letter-spacing: -0.01em; }
+.brand small { color: var(--ink-2); font-weight: 400; margin-left: 6px; font-size: 0.85rem; }
+@media (prefers-color-scheme: dark) {
+  .brand { color: #2a2340; }
+  .brand small { color: #4d4566; }
+  .hero h1 { color: #fff; text-shadow: 0 1px 8px rgba(30, 20, 60, 0.5); }
+  .hero .muted { color: #e6dff0; text-shadow: 0 1px 6px rgba(30, 20, 60, 0.5); }
+}
+
+.hero { padding: 24px 0 8px; }
+/* 히어로 아래 눈산 능선. 카드가 살짝 올라타도록 아래 여백을 음수로 */
+.ridge { display: block; width: 100%; height: 70px; margin: -6px 0 -30px; opacity: 0.85; pointer-events: none; }
+.ridge .ridge__hill { fill: var(--ridge); opacity: 0.55; }
+.ridge .ridge__snow { fill: var(--snow); }
+
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--card-line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.grid { display: grid; gap: 12px; }
+@media (min-width: 560px) { .grid--3 { grid-template-columns: repeat(3, 1fr); } }
+.card--link { display: block; text-decoration: none; color: inherit; }
+.card--link:hover { border-color: var(--accent); }
+@media (prefers-color-scheme: dark) { .card--link h2 { color: var(--accent); } }
+
+.field { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+.field label { font-weight: 600; }
+.field input {
+  font: inherit; padding: 12px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface-solid); color: var(--ink); min-height: 48px;
+}
+.row { display: flex; gap: 12px; }
+.row .field { flex: 1; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface-solid); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer;
+  text-decoration: none;
+}
+.btn--primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); width: 100%; box-shadow: 0 6px 16px var(--accent-glow); }
+.btn--ghost { background: transparent; }
+.btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.banner { background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+.banner ul { margin: 0; padding-left: 18px; }
+
+.timeline { margin: 8px 0 0; }
+.day { margin: 22px 0; }
+.day__title { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; display: flex; gap: 8px; align-items: baseline; }
+.day__title .muted { font-weight: 400; font-size: 0.95rem; }
+@media (prefers-color-scheme: dark) { .day__title { color: var(--accent); } }
+.event {
+  display: grid; grid-template-columns: 64px 1fr; gap: 10px;
+  background: var(--surface); border: 1px solid var(--card-line); border-left: 5px solid var(--line);
+  border-radius: 12px; padding: 12px; margin: 8px 0; box-shadow: var(--shadow-sm);
+}
+@media (prefers-color-scheme: dark) { .event { background: #2c3050; } }
+.event--diet { border-left-color: var(--diet); }
+.event--dose { border-left-color: var(--dose); }
+.event--fast { border-left-color: var(--fast); }
+.event--exam { border-left-color: var(--exam); }
+.event__time { font-variant-numeric: tabular-nums; font-weight: 700; }
+.event__time small { display: block; font-weight: 400; color: var(--ink-2); font-size: 0.8rem; }
+.event__title { font-weight: 600; }
+.event__detail { color: var(--ink-2); font-size: 0.95rem; margin-top: 2px; }
+
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--surface);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line); padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+.bar .wrap { display: flex; gap: 10px; padding: 0; }
+.bar .btn { flex: 1; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%);
+  background: var(--toast-bg); color: var(--toast-ink); padding: 10px 16px; border-radius: 999px;
+  opacity: 0; transition: opacity 0.2s; pointer-events: none;
+}
+.toast.is-on { opacity: 1; }
+
+.faq details { border-top: 1px solid var(--line); padding: 10px 0; }
+.faq summary { cursor: pointer; font-weight: 600; }
+.faq p { margin: 8px 0 0; color: var(--ink-2); }
+
+.site-footer { margin-top: 32px; padding: 20px 0 32px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 0.9rem; }
+.site-footer p { margin: 0 0 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+</style>
+<style>
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin: 6px 0 12px; }
+  .chip { border:1px solid var(--line); background: var(--surface-solid); border-radius: 999px; padding: 8px 14px; font-weight:600; font-size:0.95rem; }
+  .chip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .num { display:flex; align-items:center; gap:10px; margin: 8px 0; }
+  .num input { width: 90px; }
+  .result { border-left: 6px solid var(--dose); }
+  .big { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 4px 0; }
+  .big small { font-size: 1rem; font-weight: 600; color: var(--ink-2); display:block; }
+  .why { margin: 10px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 0.95rem; }
+  .why li { margin: 2px 0; }
+  .tag { display:inline-block; font-size:0.75rem; font-weight:700; color:#fff; background:var(--exam); padding:2px 8px; border-radius:6px; }
+  .copybox { background: var(--surface-solid); border:1px dashed var(--line); border-radius: 10px; padding: 10px 12px; font-size: 0.95rem; margin-top: 10px; }
+
+  .field input { width:100%; min-width:0; }
+  .row { min-width:0; } .row .field { min-width:0; }
+  .qrrow > div { min-width:0; overflow-wrap:anywhere; }
+  .big { font-size: 1.7rem; }
+  input.chip { width: 90px; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="brand" href="#">장비움<small>추적검사 계산기</small></a></div></header>
+<main class="wrap">
+  <section class="hero">
+    <h1>대장내시경 다음 검사 시기</h1>
+    <p class="muted">이번 검사 소견을 체크하면 2022 한국 지침 기준 추적 간격과 날짜가 바로 나옵니다.</p>
+  </section>
+
+  <section class="card">
+    <h2>이번 검사</h2>
+    <div class="row">
+      <div class="field"><label>검사일</label><input type="date" value="2026-09-09"></div>
+      <div class="field"><label>장정결</label><input type="text" value="적절 (BBPS ≥6)"></div>
+    </div>
+    <h2 style="margin-top:14px">선종</h2>
+    <div class="num"><label>개수</label><input type="number" value="4" class="chip"></div>
+    <div class="num"><label>가장 큰 크기(mm)</label><input type="number" value="8" class="chip"></div>
+    <div class="chips">
+      <span class="chip">관융모/융모</span><span class="chip">고도이형성</span>
+    </div>
+    <h2>톱니용종</h2>
+    <div class="chips">
+      <span class="chip">SSL 이형성</span><span class="chip">TSA</span><span class="chip">10mm 이상</span><span class="chip">SSL 3개 이상</span>
+    </div>
+    <h2>절제</h2>
+    <div class="chips">
+      <span class="chip">20mm 이상 분할절제</span><span class="chip on">완전 절제 확인</span>
+    </div>
+  </section>
+
+  <section class="card result">
+    <span class="tag">중등도 위험</span>
+    <div class="big">3~5년 뒤<small>2029년 9월 ~ 2031년 9월</small></div>
+    <ul class="why">
+      <li>선종 3~4개 → 3~5년 (2022 한국 지침, 조건부 권고)</li>
+      <li>10mm 이상·융모·고도이형성 없음 → 단축 사유 없음</li>
+      <li>장정결 적절, 완전 절제 → 기저검사 유효</li>
+    </ul>
+    <div class="copybox">결과지용 문구: "선종 4개(최대 8mm) 절제. 2022 한국 폴립절제 후 추적 지침에 따라 3~5년 후 추적 대장내시경 권고 (2029~2031년)."</div>
+  </section>
+</main>
+<div class="bar"><div class="wrap"><button class="btn">문구 복사</button><button class="btn btn--primary">환자용 링크 만들기</button></div></div>
+</body>
+</html>
