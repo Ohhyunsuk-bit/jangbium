@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시안 C · 저녁 등불</title>
+<style>
+:root {
+  --sky-1: #4a3a66; --sky-2: #2b2d4d; --bg: #1c1f33;
+  --surface: #262a44; --ink: #f2eef8; --ink-2: #aeb0c8; --line: #3a3f5e;
+  --accent: #f2b95a; --accent-ink: #2a1d05; --blue: #7ea3ff;
+  --diet: #7fd39f; --dose: #f2b95a; --fast: #ffd27a; --exam: #ff7a7a;
+  --warn-bg: #3d3116; --warn-ink: #ffd88a; --radius: 14px;
+}
+* { box-sizing: border-box; }
+body { margin:0; color:var(--ink); font:16px/1.6 -apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;
+  background: linear-gradient(180deg, #e9b9c2 0%, #8b6f9e 14%, var(--sky-1) 26%, var(--sky-2) 40%, var(--bg) 60%) fixed; padding-bottom: 96px; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+.site-header { padding: 14px 0; }
+.brand { font-weight: 800; text-decoration: none; color: #2a2340; font-size: 1.15rem; }
+.brand small { color: #4d4566; font-weight: 400; margin-left: 6px; font-size: 0.85rem; }
+.hero { position: relative; padding: 22px 0 6px; }
+.ridge { display:block; width:100%; height:70px; margin: -6px 0 -30px; opacity: 0.85; }
+h1 { font-size: 1.6rem; line-height: 1.3; margin: 0 0 0.5em;  color: #fff; text-shadow: 0 1px 8px rgba(30,20,60,0.5); }
+h2 { font-size: 1.15rem; line-height: 1.3; margin: 0 0 0.4em; }
+p { margin: 0 0 1em; } .muted { color: var(--ink-2); }
+.hero .muted { color: #e6dff0; text-shadow: 0 1px 6px rgba(30,20,60,0.5); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin: 14px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(3,1fr); }
+.card--link { text-decoration:none; color:inherit; padding: 14px; margin: 0; }
+.card--link h2 { color: var(--accent); }
+.card--link p { font-size: 0.85rem; margin: 0; }
+.btn { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:0 18px; border-radius:12px; border:1px solid var(--line);
+  background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; }
+.btn--primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); width:100%; box-shadow: 0 0 24px rgba(242,185,90,0.45); }
+.banner { background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 12px 14px; margin: 12px 0; font-size: 0.95rem; }
+.day__title { font-weight: 700; margin: 18px 0 8px; display:flex; gap:8px; align-items:baseline; color: var(--accent); }
+.event { display:grid; grid-template-columns: 64px 1fr; gap:10px; background: #2c3050; border:1px solid var(--line);
+  border-left: 5px solid var(--line); border-radius: 12px; padding: 12px; margin: 8px 0; }
+.event--diet { border-left-color: var(--diet); } .event--dose { border-left-color: var(--dose); }
+.event--fast { border-left-color: var(--fast); } .event--exam { border-left-color: var(--exam); }
+.event__time { font-variant-numeric: tabular-nums; font-weight: 700; } .event__time small { display:block; font-weight:400; color:var(--ink-2); font-size:0.8rem; }
+.event__title { font-weight: 600; } .event__detail { color: var(--ink-2); font-size: 0.95rem; }
+.bar { position: fixed; left:0; right:0; bottom:0; background: rgba(28,31,51,0.92); backdrop-filter: blur(8px); border-top:1px solid var(--line); padding: 10px 16px; }
+.bar .wrap { display:flex; gap:10px; padding:0; } .bar .btn { flex:1; }
+.label { display:inline-block; font-size:0.75rem; font-weight:700; color:#1c1f33; background:var(--blue); padding:2px 8px; border-radius:6px; margin-bottom:8px; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="brand" href="#">장비움<small>장정결 스케줄러</small></a></div></header>
+<main class="wrap">
+  <section class="hero">
+        <h1>대장내시경 검사 시간만 넣으면 복용 시간표가 나옵니다</h1>
+    <p class="muted">처방받은 장정결제를 고르세요. 전날 식이부터 당일 복용 완료까지 시각 순서로 알려드립니다.</p>
+      <svg class="ridge" viewBox="0 0 640 70" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 70 L60 52 L120 40 L170 46 L230 30 L280 38 L330 8 L380 34 L430 26 L490 44 L550 36 L600 50 L640 46 L640 70 Z" fill="#5a5680" opacity="0.55"/>
+      <path d="M312 20 L330 8 L348 22 L340 24 L330 16 L320 24 Z" fill="#f6eef8" opacity="0.95"/>
+      <path d="M296 30 L330 8 L364 32 L352 31 L330 15 L308 31 Z" fill="#f6eef8" opacity="0.55"/>
+    </svg>
+  </section>
+  <section class="grid">
+    <a class="card card--link" href="#"><h2>쿨프렙산</h2><p class="muted">2L 분말. 전날 1L, 당일 1L.</p></a>
+    <a class="card card--link" href="#"><h2>오라팡정</h2><p class="muted">알약 28정. 전날 14정, 당일 14정.</p></a>
+    <a class="card card--link" href="#"><h2>플렌뷰산</h2><p class="muted">1L 분말. 전날 500mL, 당일 500mL.</p></a>
+  </section>
+  <section class="card">
+    <span class="label">결과 화면 예시</span>
+    <h2>9월 12일(토) 09:00 검사 · 쿨프렙산</h2>
+    <div class="banner">병원에서 받은 안내가 있으면 항상 그것이 우선입니다.</div>
+    <div class="day__title">검사 전날 <span class="muted">9월 11일(금)</span></div>
+    <div class="event event--diet"><div class="event__time">아침</div><div><div class="event__title">저잔사식</div><div class="event__detail">흰죽, 계란, 두부 등 섬유질 적은 음식</div></div></div>
+    <div class="event event--dose"><div class="event__time">20:00<small>~21:30</small></div><div><div class="event__title">1차 복용</div><div class="event__detail">약 1L를 1시간 동안, 이어서 물 500mL</div></div></div>
+    <div class="day__title">검사 당일 <span class="muted">9월 12일(토)</span></div>
+    <div class="event event--dose"><div class="event__time">05:30<small>~07:00</small></div><div><div class="event__title">2차 복용</div><div class="event__detail">약 1L를 1시간 동안, 이어서 물 500mL</div></div></div>
+    <div class="event event--fast"><div class="event__time">07:00</div><div><div class="event__title">복용 완료 · 금식</div><div class="event__detail">검사 2시간 전까지 마치세요</div></div></div>
+    <div class="event event--exam"><div class="event__time">09:00</div><div><div class="event__title">대장내시경 검사</div></div></div>
+  </section>
+</main>
+<div class="bar"><div class="wrap"><button class="btn">캘린더 저장</button><button class="btn btn--primary">링크 공유</button></div></div>
+</body>
+</html>

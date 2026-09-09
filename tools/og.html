@@ -6,16 +6,23 @@
 <style>
   html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
   body {
-    background: radial-gradient(90% 70% at 30% 0%, #4a3521 0%, #17110d 75%);
-    color: #f1e6d4; font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    position: relative;
+    background: linear-gradient(180deg, #e4dcf1 0%, #f3d3dc 45%, #fbe0d3 80%, #f7efe9 100%);
+    color: #232741; font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     display: flex; flex-direction: column; justify-content: center; padding: 0 96px; box-sizing: border-box;
   }
-  .brand { font-size: 40px; color: #dca960; letter-spacing: 0.02em; }
-  h1 { font-size: 84px; line-height: 1.15; margin: 18px 0 26px; font-weight: 800; color: #f7ecd9; }
-  p { font-size: 36px; margin: 0; color: #cbb79c; }
+  .brand { font-size: 40px; color: #1f4fbf; font-weight: 700; letter-spacing: 0.02em; }
+  h1 { font-size: 84px; line-height: 1.15; margin: 18px 0 26px; font-weight: 800; color: #232741; position: relative; }
+  p { font-size: 36px; margin: 0; color: #5f6582; position: relative; }
+  .ridge { position: absolute; left: 0; right: 0; bottom: 0; width: 1200px; height: 220px; }
 </style>
 </head>
 <body>
+  <svg class="ridge" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 220 L110 160 L230 130 L320 145 L430 95 L520 120 L620 20 L720 105 L810 80 L920 135 L1030 110 L1120 150 L1200 140 L1200 220 Z" fill="#7b83a8" opacity="0.45"/>
+    <path d="M588 56 L620 20 L654 60 L640 64 L620 40 L602 64 Z" fill="#fff" opacity="0.95"/>
+    <path d="M560 84 L620 20 L684 88 L664 86 L620 36 L580 86 Z" fill="#fff" opacity="0.5"/>
+  </svg>
   <div class="brand">장비움 · 장정결 스케줄러</div>
   <h1>검사 시간만 넣으면<br>복용 시간표가 나옵니다</h1>
   <p>쿨프렙 · 오라팡 · 플렌뷰 — 캘린더 저장, 카톡 공유</p>
