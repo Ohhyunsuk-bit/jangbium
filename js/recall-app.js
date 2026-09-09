@@ -1,12 +1,14 @@
 import {
-  computeRecall, buildReportText, formatYearMonthKo, formatMonthsRange,
-  parseDateOnly, formatDateOnly, buildRecallQuery,
+  computeRecall, buildReportText, buildRecallEvents, formatYearMonthKo, formatMonthsRange,
+  parseDateOnly, formatDateOnly, buildRecallQuery, parseRecallParams,
 } from './recall.js';
-import { esc, toast, copyText } from './ui-utils.js';
+import { buildIcs } from './ics.js';
+import { esc, toast, share, copyText } from './ui-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
   if (page === 'recall') initRecallForm();
+  if (page === 'recall-plan') initRecallPlanPage();
 });
 
 const RISK_LABEL = {
@@ -98,4 +100,106 @@ function initRecallForm() {
     window.open(url, '_blank', 'noopener');
     copyText(url, '환자용 링크를 복사했습니다');
   });
+}
+
+function invalidRecallMarkup() {
+  return `
+    <section class="card">
+      <h1>다음 검사 시기를 계산할 수 없습니다</h1>
+      <p class="muted">링크가 잘못되었습니다. 병원에서 다시 링크를 받아 주세요.</p>
+      <a class="btn btn--primary" href="recall.html">계산기로</a>
+    </section>`;
+}
+
+function renderQr(url) {
+  const holder = document.getElementById('qr-holder');
+  if (!holder) return;
+  if (typeof window.qrcode !== 'function') {
+    holder.innerHTML = `<p class="muted">QR을 표시할 수 없습니다. 아래 링크를 사용하세요.</p><p class="muted">${esc(url)}</p>`;
+    return;
+  }
+  const qr = window.qrcode(0, 'M');
+  qr.addData(url);
+  qr.make();
+  holder.innerHTML = qr.createSvgTag(4, 8);
+}
+
+function renderPatientPlan(result) {
+  const root = document.getElementById('plan');
+  if (result.risk === 'none') {
+    root.innerHTML = `
+      <section class="hero">
+        <h1>이번 계산기의 대상이 아닙니다</h1>
+        <p class="muted">${esc(result.reasons[0])} 일반 검진 주기를 따르세요.</p>
+        <p class="muted">병원에서 따로 정해준 날짜가 있으면 그것을 따르세요.</p>
+      </section>`;
+    return;
+  }
+  const { big, dateLine } = formatRange(result);
+  const caveats = result.caveats.length
+    ? `<div class="banner"><ul>${result.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
+    : '';
+  root.innerHTML = `
+    <section class="hero">
+      <h1>다음 대장내시경은 ${esc(big)}</h1>
+      <p class="muted">${esc(dateLine)}</p>
+      <p>${esc(result.reasons.join(' '))} 2022년 한국 폴립절제 후 추적 대장내시경 검사 지침에 따른 계산입니다.</p>
+      <p class="muted">병원에서 따로 정해준 날짜가 있으면 그것을 따르세요.</p>
+    </section>
+    ${caveats}
+    <section class="card">
+      <p class="muted">이 화면을 QR로 저장하거나 인쇄할 수 있습니다.</p>
+      <div id="qr-holder"></div>
+    </section>`;
+  renderQr(location.href);
+}
+
+function downloadRecallIcs({ result, input }) {
+  const events = buildRecallEvents(result, input.examDate);
+  const ics = buildIcs({ events, uidSeed: `recall-${formatDateOnly(input.examDate)}-${result.risk}` });
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `장비움-추적검사-${formatDateOnly(input.examDate)}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('캘린더 파일을 내려받았습니다');
+}
+
+function initRecallPlanPage() {
+  const params = new URLSearchParams(location.search);
+  const input = parseRecallParams(params);
+  const root = document.getElementById('plan');
+  const bar = document.getElementById('bar');
+
+  if (!input) {
+    root.innerHTML = invalidRecallMarkup();
+    bar.hidden = true;
+    return;
+  }
+
+  let result;
+  try {
+    result = computeRecall(input);
+  } catch {
+    root.innerHTML = invalidRecallMarkup();
+    bar.hidden = true;
+    return;
+  }
+
+  renderPatientPlan(result);
+
+  if (result.risk === 'none') {
+    bar.hidden = true;
+    return;
+  }
+  bar.hidden = false;
+  document.getElementById('btn-ics').addEventListener('click', () => downloadRecallIcs({ result, input }));
+  document.getElementById('btn-share').addEventListener('click', () => share({
+    title: '대장내시경 다음 검사 시기 | 장비움',
+    url: location.href,
+  }));
 }
