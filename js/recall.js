@@ -156,15 +156,22 @@ export function formatMonthsRange(min, max) {
   return `${formatMonths(min)}~${formatMonths(max)}`;
 }
 
+// result.dates로 "날짜 범위" 문구를 만든다. 범위가 있으면 "A ~ B", 한 시점이면 "A"
+// (withApprox면 "A 무렵"). formatRange(recall-app.js)와 buildReportText가 공유한다.
+export function formatDateLine(result, { withApprox = false } = {}) {
+  if (result.dates.length > 1) {
+    return `${formatYearMonthKo(result.dates[0])} ~ ${formatYearMonthKo(result.dates[1])}`;
+  }
+  return `${formatYearMonthKo(result.dates[0])}${withApprox ? ' 무렵' : ''}`;
+}
+
 export function buildReportText(result, examDate) {
   if (result.risk === 'none') {
     const base = `${formatDateOnly(examDate)} 검사: 절제한 용종 없음. 일반 검진 주기를 따르세요.`;
     return result.caveats.length ? `${base} ${result.caveats.join(' ')}` : base;
   }
   const when = `${formatMonthsRange(result.months[0], result.months[1])} 후`;
-  const whenDate =
-    result.dates.length > 1 ? `${formatYearMonthKo(result.dates[0])} ~ ${formatYearMonthKo(result.dates[1])}`
-    : `${formatYearMonthKo(result.dates[0])}`;
+  const whenDate = formatDateLine(result);
   return `${result.reasons.join(' ')} 2022 한국 폴립절제 후 추적 대장내시경 검사 지침에 따라 ${when} 추적 대장내시경을 권고합니다 (${whenDate}).`;
 }
 

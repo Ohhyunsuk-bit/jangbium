@@ -1,5 +1,5 @@
 import {
-  computeRecall, buildReportText, buildRecallEvents, formatYearMonthKo, formatMonthsRange,
+  computeRecall, buildReportText, buildRecallEvents, formatMonthsRange, formatDateLine,
   parseDateOnly, formatDateOnly, buildRecallQuery, parseRecallParams,
 } from './recall.js';
 import { buildIcs } from './ics.js';
@@ -16,21 +16,22 @@ const RISK_LABEL = {
   low: '저위험',
   moderate: '중등도 위험',
   high: '고위험',
-  veryhigh: '매우 고위험',
+  veryhigh: '고위험(1년 간격)',
   piecemeal: '분할절제 후',
 };
 
 function formatRange(result) {
   const big = `${formatMonthsRange(result.months[0], result.months[1])} 뒤`;
-  const dateLine =
-    result.dates.length > 1 ? `${formatYearMonthKo(result.dates[0])} ~ ${formatYearMonthKo(result.dates[1])}`
-    : `${formatYearMonthKo(result.dates[0])} 무렵`;
+  const dateLine = formatDateLine(result, { withApprox: true });
   return { big, dateLine };
 }
 
-function caveatsMarkup(result) {
+// alert: true면 role="alert"로 즉시 재고지(환자 화면처럼 한 번만 렌더될 때).
+// 의사 화면(recall.html)은 입력할 때마다 결과 카드를 통째로 다시 그리므로
+// role="alert"를 붙이면 키 입력마다 스크린리더가 같은 배너를 재안내하게 된다 — 그래서 false로 호출한다.
+function caveatsMarkup(result, { alert = false } = {}) {
   return result.caveats.length
-    ? `<div class="banner" role="alert"><ul>${result.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
+    ? `<div class="banner"${alert ? ' role="alert"' : ''}><ul>${result.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
     : '';
 }
 
@@ -57,8 +58,8 @@ function readInput(form) {
   form.querySelectorAll('.chip.on').forEach((btn) => flags.add(btn.dataset.flag));
   return {
     examDate: parseDateOnly(form.elements['r-date'].value) ?? new Date(),
-    adenomaCount: Math.max(0, Math.trunc(Number(form.elements['r-count'].value)) || 0),
-    maxSizeMm: Math.max(0, Math.trunc(Number(form.elements['r-size'].value)) || 0),
+    adenomaCount: Math.min(999, Math.max(0, Math.trunc(Number(form.elements['r-count'].value)) || 0)),
+    maxSizeMm: Math.min(999, Math.max(0, Math.trunc(Number(form.elements['r-size'].value)) || 0)),
     flags,
     sslBand: form.elements['r-ssl'].value,
     prepInadequate: form.elements['r-prep'].value === '1',
@@ -138,7 +139,7 @@ function renderPatientPlan(result) {
         <p class="muted">${esc(result.reasons[0])} 일반 검진 주기를 따르세요.</p>
         <p class="muted">병원에서 따로 정해준 날짜가 있으면 그것을 따르세요.</p>
       </section>
-      ${caveatsMarkup(result)}`;
+      ${caveatsMarkup(result, { alert: true })}`;
     return;
   }
   const { big, dateLine } = formatRange(result);
@@ -149,7 +150,7 @@ function renderPatientPlan(result) {
       <p>${esc(result.reasons.join(' '))} 2022년 한국 폴립절제 후 추적 대장내시경 검사 지침에 따른 계산입니다.</p>
       <p class="muted">병원에서 따로 정해준 날짜가 있으면 그것을 따르세요.</p>
     </section>
-    ${caveatsMarkup(result)}
+    ${caveatsMarkup(result, { alert: true })}
     <section class="card">
       <p class="muted">이 화면을 QR로 저장하거나 인쇄할 수 있습니다.</p>
       <div id="qr-holder"></div>
