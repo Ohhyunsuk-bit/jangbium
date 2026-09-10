@@ -13,7 +13,7 @@
 
 ## 테스트
 
-    npm test           # node --test (schedule / ics / protocols)
+    npm test           # node --test (schedule / ics / protocols / recall)
 
 ## 구조
 
@@ -40,6 +40,7 @@ GitHub Pages, `gh-pages` 브랜치. 공개 주소: https://jangbium.github.io/
 
     bash tools/deploy-pages.sh
 
+- 새 페이지(html)를 추가할 때는 `tools/deploy-pages.sh`와 `.github/workflows/deploy.yml` 양쪽의 파일 목록(`FILES=(...)` / `cp ... /tmp/deploy/`)을 같이 갱신해야 한다 — 둘 중 하나만 고치면 그 경로에서만 배포가 빠져 라이브 사이트에서 조용히 404가 난다.
 - 저장소 Settings → Pages 에서 Branch가 `gh-pages` / `/ (root)` 로 켜져 있어야 한다(무료 플랜은 공개 저장소만 가능).
 - 페이지의 canonical·og:image·sitemap은 현재 위 GitHub Pages 주소로 고정되어 있다. 나중에 도메인(`jangbium.com` 등)을 붙이면 Settings → Pages → Custom domain에 등록하고, `*.html`·`sitemap.xml`·`robots.txt`의 `https://jangbium.github.io`을 새 주소로 일괄 치환한 뒤 다시 배포한다.
 - 방문 통계는 아직 없다(GitHub Pages 자체 통계 없음). 필요해지면 쿠키 없는 분석 도구를 붙인다.

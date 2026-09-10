@@ -209,3 +209,28 @@ test('parseRecallParams: 잘못된 값은 null', () => {
   assert.equal(bad('d=2026-09-09&n=0&s=0&ssl=2'), null); // 잘못된 ssl 구간
   assert.equal(bad('d=2026-09-09&n=0&s=0&b=9'), null); // 잘못된 장정결 값
 });
+
+test('computeRecall: 10mm 이상 규칙은 3~4개 중등도 규칙보다 우선한다', () => {
+  const r = computeRecall({ ...base, adenomaCount: 3, maxSizeMm: 10 });
+  assert.equal(r.risk, 'high');
+  assert.deepEqual(r.months, [36, 36]);
+});
+
+test('computeRecall: 고위험 조직 플래그는 선종 0개·SSL 3~4개 중등도 규칙보다 우선한다', () => {
+  const r = computeRecall({ ...base, sslBand: '3', flags: new Set(['villous']) });
+  assert.equal(r.risk, 'high');
+  assert.deepEqual(r.months, [36, 36]);
+});
+
+test('computeRecall: 선종 10개 초과 규칙은 고위험 플래그보다 우선한다 (12개월, 36개월 아님)', () => {
+  const r = computeRecall({ ...base, adenomaCount: 11, flags: new Set(['highGrade']) });
+  assert.equal(r.risk, 'veryhigh');
+  assert.deepEqual(r.months, [12, 12]);
+});
+
+test('parseRecallParams: n·s 파라미터 자체가 없으면 null', () => {
+  const params = new URLSearchParams('d=2026-09-09');
+  assert.equal(params.has('n'), false);
+  assert.equal(params.has('s'), false);
+  assert.equal(parseRecallParams(params), null);
+});
