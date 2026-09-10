@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시안 B · 원스크롤 리포트 (환자 포털)</title>
+<style>
+:root {
+  --sky-1: #fbe0d3; --sky-2: #f3d3dc; --sky-3: #e4dcf1; --sky-end: #f7efe9;
+  --surface: rgba(255, 255, 255, 0.86); --surface-solid: #ffffff; --card-line: rgba(255, 255, 255, 0.9);
+  --ink: #232741; --ink-2: #5f6582; --line: #dcd6e6;
+  --accent: #1f4fbf; --accent-ink: #ffffff; --accent-glow: rgba(31, 79, 191, 0.35);
+  --good: #2f9a68; --warn-bg: #fff1d6; --warn-ink: #6b4300;
+  --radius: 16px; --shadow: 0 8px 24px rgba(60, 50, 90, 0.10);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background-color: var(--sky-end);
+  background-image: linear-gradient(180deg, var(--sky-3) 0%, var(--sky-2) 32%, var(--sky-1) 60%, var(--sky-end) 100%);
+  background-attachment: fixed; background-repeat: no-repeat;
+  color: var(--ink); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+  padding-bottom: 40px;
+}
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 16px; }
+.site-header { padding: 14px 0; }
+.brand { font-weight: 800; color: var(--ink); font-size: 1.1rem; }
+
+.cover { text-align: center; padding: 32px 0 20px; }
+.cover .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; margin: 0 auto 14px; }
+.cover h1 { font-size: 1.5rem; margin: 0 0 4px; }
+.cover p { color: var(--ink-2); margin: 0; }
+
+.step {
+  background: var(--surface); border: 1px solid var(--card-line); border-radius: var(--radius);
+  padding: 22px; margin: 16px 0; box-shadow: var(--shadow); backdrop-filter: blur(6px);
+}
+.step .kicker { font-size: 0.78rem; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 6px; }
+.step h2 { font-size: 1.15rem; margin: 0 0 10px; }
+
+.result-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(47,154,104,0.12); color: var(--good); font-weight: 700; font-size: 0.9rem; padding: 6px 12px; border-radius: 999px; margin-bottom: 10px; }
+.finding-row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 0.95rem; }
+.finding-row:first-of-type { border-top: none; }
+.finding-row span:last-child { color: var(--ink-2); }
+
+.countdown { text-align: center; padding: 10px 0; }
+.countdown .num { font-size: 2.4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.countdown .label { color: var(--ink-2); margin-top: 6px; }
+.progress { height: 8px; border-radius: 999px; background: var(--line); margin: 16px 0 6px; overflow: hidden; }
+.progress > div { height: 100%; width: 4%; background: var(--accent); }
+.progress-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-2); }
+
+.habit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px; }
+.habit-card { background: var(--surface-solid); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.habit-card .emoji { font-size: 1.3rem; }
+.habit-card p { margin: 6px 0 0; font-size: 0.88rem; }
+
+.cta-row { display: flex; gap: 10px; margin-top: 8px; }
+.btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-solid); font-weight: 700; font-size: 0.92rem; text-decoration: none; color: var(--ink); }
+.btn--primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); box-shadow: 0 6px 16px var(--accent-glow); }
+
+.site-footer { margin-top: 20px; padding: 16px 0 24px; color: var(--ink-2); font-size: 0.82rem; text-align: center; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="wrap"><span class="brand">장비움 · 내 검진 리포트</span></div></header>
+
+<main class="wrap">
+  <section class="cover">
+    <div class="avatar">김</div>
+    <h1>김민수님의 검진 리포트</h1>
+    <p>2026년 9월 10일 대장내시경</p>
+  </section>
+
+  <section class="step">
+    <div class="kicker">검사 결과</div>
+    <span class="result-badge">✓ 저위험 · 양호</span>
+    <h2>선종 2개를 절제했어요</h2>
+    <div class="finding-row"><span>발견·절제</span><span>선종 2개 (최대 6mm)</span></div>
+    <div class="finding-row"><span>조직검사</span><span>고위험 소견 없음</span></div>
+    <div class="finding-row"><span>장정결</span><span>적절 · 완전 절제 확인</span></div>
+    <div class="finding-row"><span>담당의</span><span>오현석</span></div>
+  </section>
+
+  <section class="step">
+    <div class="kicker">다음 방문까지</div>
+    <h2>추적 대장내시경까지</h2>
+    <div class="countdown">
+      <div class="num">D-1826</div>
+      <div class="label">2031년 9월경 · 저위험 기준 5년 후 권고</div>
+    </div>
+    <div class="progress"><div></div></div>
+    <div class="progress-labels"><span>2026 이번 검사</span><span>2031 다음 검사</span></div>
+  </section>
+
+  <section class="step">
+    <div class="kicker">생활습관 관리</div>
+    <h2>오늘부터 이렇게 관리해보세요</h2>
+    <div class="habit-grid">
+      <div class="habit-card"><span class="emoji">🥦</span><p>식이섬유 하루 25~30g</p></div>
+      <div class="habit-card"><span class="emoji">🥩</span><p>가공육·붉은 고기 줄이기</p></div>
+      <div class="habit-card"><span class="emoji">🏃</span><p>주 150분 유산소 운동</p></div>
+      <div class="habit-card"><span class="emoji">🚭</span><p>금연 · 절주</p></div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="kicker">참고</div>
+    <h2>검사 전 안내문 다시 보기</h2>
+    <p class="muted" style="color:var(--ink-2)">지난번 받으신 쿨프렙 복용 시간표를 다시 볼 수 있어요.</p>
+    <div class="cta-row">
+      <a class="btn" href="#">안내문 다시 보기</a>
+      <a class="btn btn--primary" href="#">다음 방문 알림 받기</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">이 화면은 목업이며 실제 환자 데이터가 아닙니다.</footer>
+</body>
+</html>

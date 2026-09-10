@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시안 A-warm3 · 료칸 로비 무드 (깊이감)</title>
+<style>
+:root {
+  --bg-top: #2a2014; --bg-mid: #16100a; --bg-bot: #0a0705;
+  --wood: #241a10; --wood-line: rgba(255, 200, 130, 0.05);
+  --card-line: rgba(230, 190, 130, 0.10); --hair: rgba(230, 190, 130, 0.16);
+  --ink: #ece2d2; --ink-2: #8d7f6c; --ink-3: #5f5546;
+  --amber: #e3a656; --amber-dim: rgba(227, 166, 86, 0.55); --amber-glow: rgba(227, 166, 86, 0.22);
+  --good: #9ab389; --good-glow: rgba(154, 179, 137, 0.14);
+}
+* { box-sizing: border-box; }
+html { background: var(--bg-bot); }
+body {
+  position: relative; margin: 0; color: var(--ink);
+  font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+  padding-bottom: 60px;
+  background-color: var(--bg-bot);
+  background-repeat: no-repeat;
+  background-image:
+    /* 층마다 흩어진 등불 — 입구는 밝고 안쪽으로 갈수록 어두워졌다가, 끝에서 정원 빛처럼 옅은 초록이 스친다 */
+    radial-gradient(460px 380px at 10% 60px, var(--amber-glow), transparent 62%),
+    radial-gradient(380px 420px at 92% 620px, rgba(227,166,86,0.10), transparent 60%),
+    radial-gradient(520px 460px at 6% 1180px, rgba(227,166,86,0.13), transparent 60%),
+    radial-gradient(420px 380px at 88% 1750px, var(--good-glow), transparent 62%),
+    radial-gradient(460px 420px at 12% 2300px, rgba(227,166,86,0.09), transparent 60%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 22%, var(--bg-bot) 55%, var(--bg-mid) 80%, var(--bg-bot) 100%);
+}
+/* 저조도 사진 특유의 입자감 */
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 5; opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1, h2 { font-family: Georgia, "Noto Serif KR", serif; font-weight: 500; line-height: 1.35; margin: 0; }
+.wrap { max-width: 480px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; color: var(--amber); text-transform: uppercase; margin-bottom: 10px; }
+.muted { color: var(--ink-2); }
+
+.site-header { padding: 28px 0; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; }
+.brand { font-family: Georgia, serif; letter-spacing: 0.08em; color: var(--ink); font-size: 1rem; text-decoration: none; }
+.brand small { display: block; color: var(--ink-3); font-size: 0.68rem; letter-spacing: 0.14em; margin-top: 4px; font-family: -apple-system, sans-serif; }
+
+.hero { position: relative; padding: 70px 0 60px; text-align: center; }
+.hero .ring {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin: 0 auto 26px;
+  box-shadow: 0 0 24px 6px var(--amber-glow);
+}
+.hero h1 { font-size: 1.6rem; color: var(--ink); }
+.hero p { margin: 14px 0 0; color: var(--ink-2); font-size: 0.94rem; }
+
+nav.directory { border-top: 1px solid var(--hair); }
+nav.directory a {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding: 20px 0; border-bottom: 1px solid var(--hair); text-decoration: none; color: var(--ink);
+}
+nav.directory a .num { font-family: Georgia, serif; color: var(--ink-3); font-size: 0.85rem; margin-right: 14px; }
+nav.directory a .label { flex: 1; font-size: 1.02rem; }
+nav.directory a .hint { color: var(--ink-2); font-size: 0.82rem; text-align: right; }
+nav.directory a .arrow { color: var(--amber-dim); margin-left: 10px; }
+
+section.room { padding: 64px 0; border-top: 1px solid var(--hair); }
+section.room:first-of-type { border-top: none; }
+section.room h2 { font-size: 1.3rem; margin-bottom: 6px; }
+section.room .lede { color: var(--ink-2); margin-top: 10px; }
+
+.finding-row { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--hair); font-size: 0.95rem; }
+.finding-row:first-of-type { border-top: 1px solid var(--hair); margin-top: 18px; }
+.finding-row span:first-child { color: var(--ink-2); }
+
+.status { display: inline-flex; align-items: center; gap: 8px; color: var(--good); font-size: 0.85rem; margin-bottom: 4px; }
+.status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); box-shadow: 0 0 10px 2px rgba(154,179,137,0.5); }
+
+.alcove {
+  position: relative; margin-top: 20px; padding: 34px 26px; border-radius: 4px;
+  background:
+    radial-gradient(160px 160px at 18% 30%, var(--amber-glow), transparent 75%),
+    linear-gradient(160deg, var(--wood) 0%, #1a1109 100%);
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.alcove::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(90deg, var(--wood-line) 0px, var(--wood-line) 1px, transparent 1px, transparent 7px);
+  opacity: 0.5;
+}
+.alcove .num-big { position: relative; font-family: Georgia, serif; font-size: 2.4rem; color: var(--ink); }
+.alcove .num-big small { display: block; font-family: -apple-system, sans-serif; font-size: 0.85rem; color: var(--ink-2); margin-top: 8px; font-weight: 400; }
+
+.habit-line { display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--hair); align-items: baseline; }
+.habit-line:first-of-type { border-top: 1px solid var(--hair); margin-top: 18px; }
+.habit-line .mark { color: var(--good); font-family: Georgia, serif; }
+
+.link-row { margin-top: 26px; display: flex; gap: 22px; align-items: baseline; flex-wrap: wrap; }
+.link { color: var(--ink); text-decoration: none; font-size: 0.92rem; padding-bottom: 3px; border-bottom: 1px solid var(--hair); }
+.link--primary { color: var(--amber); border-bottom-color: var(--amber-dim); }
+
+.site-footer { padding: 40px 0 10px; color: var(--ink-3); font-size: 0.8rem; text-align: center; border-top: 1px solid var(--hair); margin-top: 40px; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="brand" href="#">장비움<small>내 검진 홈</small></a></div></header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="ring"></div>
+    <h1>안녕하세요, 김민수님</h1>
+    <p>2026년 9월 10일, 대장내시경 검사를 받으셨습니다.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <nav class="directory" aria-label="바로가기">
+    <a href="#result"><span class="num">I</span><span class="label">검사 결과</span><span class="hint">저위험 · New</span><span class="arrow">→</span></a>
+    <a href="#next"><span class="num">II</span><span class="label">다음 방문</span><span class="hint">2031년</span><span class="arrow">→</span></a>
+    <a href="#habit"><span class="num">III</span><span class="label">생활습관 관리</span><span class="hint">맞춤 가이드</span><span class="arrow">→</span></a>
+    <a href="#prep"><span class="num">IV</span><span class="label">검사 전 안내</span><span class="hint">다시 보기</span><span class="arrow">→</span></a>
+  </nav>
+
+  <section id="result" class="room">
+    <div class="eyebrow">Ⅰ · 검사 결과</div>
+    <div class="status"><span class="dot"></span>저위험 · 양호</div>
+    <h2>선종 2개를 절제했습니다</h2>
+    <p class="lede">조직검사상 고위험 소견은 없었고, 장정결이 적절해 완전 절제가 확인됐습니다.</p>
+    <div class="finding-row"><span>발견·절제</span><span>선종 2개 (최대 6mm)</span></div>
+    <div class="finding-row"><span>담당의</span><span>오현석</span></div>
+    <div class="finding-row"><span>검사일</span><span>2026-09-10</span></div>
+  </section>
+
+  <section id="next" class="room">
+    <div class="eyebrow">Ⅱ · 다음 방문</div>
+    <h2>추적 대장내시경까지</h2>
+    <div class="alcove">
+      <div class="num-big">D-1826<small>2031년 9월경 · 저위험 5년 후 권고</small></div>
+    </div>
+    <div class="link-row">
+      <a class="link link--primary" href="#">다가오면 알림 받기 →</a>
+    </div>
+  </section>
+
+  <section id="habit" class="room">
+    <div class="eyebrow">Ⅲ · 생활습관 관리</div>
+    <h2>오늘부터 이렇게</h2>
+    <div class="habit-line"><span class="mark">·</span><span>매일 채소·통곡물로 식이섬유 25~30g 섭취</span></div>
+    <div class="habit-line"><span class="mark">·</span><span>가공육·붉은 고기는 주 2~3회 이하로</span></div>
+    <div class="habit-line"><span class="mark">·</span><span>주 150분 이상 중강도 유산소 운동</span></div>
+    <div class="habit-line"><span class="mark">·</span><span>금연, 음주는 주 2회 이하로 제한</span></div>
+  </section>
+
+  <section id="prep" class="room">
+    <div class="eyebrow">Ⅳ · 검사 전 안내</div>
+    <h2>지난 안내문 다시 보기</h2>
+    <p class="lede">받으셨던 쿨프렙 복용 시간표를 다시 확인할 수 있습니다.</p>
+    <div class="link-row">
+      <a class="link" href="#">2026-09-10 안내문 보기 →</a>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">이 화면은 목업이며 실제 환자 데이터가 아닙니다.</footer>
+</body>
+</html>
