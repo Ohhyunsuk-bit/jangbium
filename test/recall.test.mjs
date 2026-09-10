@@ -113,6 +113,13 @@ test('computeRecall: 장정결 불량이면 caveat이 붙는다', () => {
   assert.ok(r.caveats.some((c) => c.includes('장정결')));
 });
 
+test('computeRecall: risk가 none이어도 장정결 불량 caveat은 남는다', () => {
+  const r = computeRecall({ ...base, prepInadequate: true });
+  assert.equal(r.risk, 'none');
+  assert.ok(r.caveats.length > 0);
+  assert.ok(r.caveats.some((c) => c.includes('장정결')));
+});
+
 test('computeRecall: 잘못된 입력은 던진다', () => {
   assert.throws(() => computeRecall({ ...base, examDate: new Date('invalid') }));
   assert.throws(() => computeRecall({ ...base, adenomaCount: -1 }));
@@ -158,6 +165,13 @@ test('buildReportText: 결과지 문구', () => {
 test('buildReportText: 절제한 용종 없음', () => {
   const text = buildReportText(computeRecall(base), base.examDate);
   assert.match(text, /절제한 용종 없음/);
+});
+
+test('buildReportText: risk가 none이어도 장정결 불량 caveat을 문구에 포함한다', () => {
+  const result = computeRecall({ ...base, prepInadequate: true });
+  const text = buildReportText(result, base.examDate);
+  assert.match(text, /절제한 용종 없음/);
+  assert.match(text, /장정결/);
 });
 
 import { parseRecallParams, buildRecallQuery } from '../js/recall.js';
