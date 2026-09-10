@@ -28,23 +28,27 @@ function formatRange(result) {
   return { big, dateLine };
 }
 
+function caveatsMarkup(result) {
+  return result.caveats.length
+    ? `<div class="banner" role="alert"><ul>${result.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
+    : '';
+}
+
 function renderResultCard(el, input, result) {
   if (result.risk === 'none') {
     el.innerHTML = `
       <span class="tag">${esc(RISK_LABEL.none)}</span>
-      <p class="muted">${esc(result.reasons[0])} 일반 검진 주기를 따르세요.</p>`;
+      <p class="muted">${esc(result.reasons[0])} 일반 검진 주기를 따르세요.</p>
+      ${caveatsMarkup(result)}`;
     return;
   }
   const { big, dateLine } = formatRange(result);
   const reasons = result.reasons.map((r) => `<li>${esc(r)}</li>`).join('');
-  const caveats = result.caveats.length
-    ? `<div class="banner"><ul>${result.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
-    : '';
   el.innerHTML = `
     <span class="tag">${esc(RISK_LABEL[result.risk])}</span>
     <div class="big">${esc(big)}<small>${esc(dateLine)}</small></div>
     <ul class="why">${reasons}</ul>
-    ${caveats}
+    ${caveatsMarkup(result)}
     <div class="copybox">${esc(buildReportText(result, input.examDate))}</div>`;
 }
 
@@ -82,8 +86,10 @@ function initRecallForm() {
   form.addEventListener('input', update);
   form.addEventListener('change', update);
   form.querySelectorAll('.chip').forEach((btn) => {
+    btn.setAttribute('aria-pressed', btn.classList.contains('on'));
     btn.addEventListener('click', () => {
       btn.classList.toggle('on');
+      btn.setAttribute('aria-pressed', btn.classList.contains('on'));
       update();
     });
   });
@@ -95,10 +101,9 @@ function initRecallForm() {
   });
   document.getElementById('btn-patient-link').addEventListener('click', () => {
     if (!lastInput) return;
-    const base = location.href.replace(/recall\.html.*$/, '');
-    const url = `${base}recall-plan.html?${buildRecallQuery(lastInput)}`;
-    window.open(url, '_blank', 'noopener');
+    const url = new URL(`recall-plan.html?${buildRecallQuery(lastInput)}`, location.href).href;
     copyText(url, '환자용 링크를 복사했습니다');
+    window.open(url, '_blank', 'noopener');
   });
 }
 
@@ -132,13 +137,11 @@ function renderPatientPlan(result) {
         <h1>이번 계산기의 대상이 아닙니다</h1>
         <p class="muted">${esc(result.reasons[0])} 일반 검진 주기를 따르세요.</p>
         <p class="muted">병원에서 따로 정해준 날짜가 있으면 그것을 따르세요.</p>
-      </section>`;
+      </section>
+      ${caveatsMarkup(result)}`;
     return;
   }
   const { big, dateLine } = formatRange(result);
-  const caveats = result.caveats.length
-    ? `<div class="banner"><ul>${result.caveats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
-    : '';
   root.innerHTML = `
     <section class="hero">
       <h1>다음 대장내시경은 ${esc(big)}</h1>
@@ -146,7 +149,7 @@ function renderPatientPlan(result) {
       <p>${esc(result.reasons.join(' '))} 2022년 한국 폴립절제 후 추적 대장내시경 검사 지침에 따른 계산입니다.</p>
       <p class="muted">병원에서 따로 정해준 날짜가 있으면 그것을 따르세요.</p>
     </section>
-    ${caveats}
+    ${caveatsMarkup(result)}
     <section class="card">
       <p class="muted">이 화면을 QR로 저장하거나 인쇄할 수 있습니다.</p>
       <div id="qr-holder"></div>

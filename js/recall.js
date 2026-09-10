@@ -158,7 +158,8 @@ export function formatMonthsRange(min, max) {
 
 export function buildReportText(result, examDate) {
   if (result.risk === 'none') {
-    return `${formatDateOnly(examDate)} 검사: 절제한 용종 없음. 일반 검진 주기를 따르세요.`;
+    const base = `${formatDateOnly(examDate)} 검사: 절제한 용종 없음. 일반 검진 주기를 따르세요.`;
+    return result.caveats.length ? `${base} ${result.caveats.join(' ')}` : base;
   }
   const when = `${formatMonthsRange(result.months[0], result.months[1])} 후`;
   const whenDate =
