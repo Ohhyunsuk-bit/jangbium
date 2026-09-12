@@ -69,13 +69,15 @@ export function computeDoseTimes({ examAt, product }) {
   const dose2End = addMinutes(examAt, -EXAM_OFFSET_MIN);
   const dose2Start = addMinutes(dose2End, -totalMinutes(steps2));
   const prevDay = addDays(startOfDay(examAt), -1);
+  const dose1Ideal = addMinutes(dose2Start, -DOSE_GAP_MIN);
   const dose1Start = clampDate(
-    addMinutes(dose2Start, -DOSE_GAP_MIN),
+    dose1Ideal,
     atClock(prevDay, DOSE1_EARLIEST),
     atClock(prevDay, DOSE1_LATEST),
   );
+  const dose1Clamped = dose1Start.getTime() !== dose1Ideal.getTime();
   const dose1End = addMinutes(dose1Start, totalMinutes(steps1));
-  return { dose1Start, dose1End, dose2Start, dose2End };
+  return { dose1Start, dose1End, dose2Start, dose2End, dose1Clamped };
 }
 
 function pushDose(push, steps, start, label) {
@@ -100,7 +102,7 @@ export function computeSchedule({ examAt, productId, now = new Date() }) {
   if (!(examAt instanceof Date) || Number.isNaN(examAt.getTime())) throw new Error('invalid examAt');
 
   const [steps1, steps2] = product.doses;
-  const { dose1Start, dose1End, dose2Start, dose2End } = computeDoseTimes({ examAt, product });
+  const { dose1Start, dose1End, dose2Start, dose2End, dose1Clamped } = computeDoseTimes({ examAt, product });
   const prevDay = addDays(startOfDay(examAt), -1);
 
   const events = [];
@@ -146,6 +148,12 @@ export function computeSchedule({ examAt, productId, now = new Date() }) {
     warnings.push({
       code: 'INTERVAL_LONG',
       message: `1차와 2차 복용 간격이 ${product.maxIntervalHours}시간을 넘습니다. 병원에서 안내한 복용 시각이 있으면 그것을 따르세요.`,
+    });
+  }
+  if (dose1Clamped) {
+    warnings.push({
+      code: 'DOSE1_CLAMPED',
+      message: `1차 복용 시각이 ${DOSE1_EARLIEST}~${DOSE1_LATEST} 범위로 조정되어, 2차보다 정확히 11시간 전은 아닙니다. 병원에서 안내받은 시각과 다를 수 있습니다.`,
     });
   }
 

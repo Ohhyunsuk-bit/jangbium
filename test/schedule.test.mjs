@@ -142,36 +142,49 @@ test('금식 이벤트: 1차 완료 후 "맑은 음료만", 2차 완료 후 "금
   assert.ok(fasts[1].title.includes('금식'));
 });
 
-test('경고: 정상 케이스는 경고 없음', () => {
+test('경고: 정상 케이스(clamp 없음)는 경고 없음', () => {
   assert.deepEqual(run(at(2026, 9, 10, 9, 0), 'coolprep').warnings, []);
-  assert.deepEqual(run(at(2026, 9, 10, 14, 0), 'coolprep').warnings, []);
 });
 
-test('경고: 14:00 오라팡 → INTERVAL_LONG', () => {
+test('경고: 14:00 쿨프렙 → 1차가 22:00으로 clamp되어 DOSE1_CLAMPED', () => {
+  const codes = run(at(2026, 9, 10, 14, 0), 'coolprep').warnings.map((w) => w.code);
+  assert.deepEqual(codes, ['DOSE1_CLAMPED']);
+});
+
+test('경고: 14:00 오라팡 → INTERVAL_LONG + DOSE1_CLAMPED', () => {
   const codes = run(at(2026, 9, 10, 14, 0), 'orapang').warnings.map((w) => w.code);
-  assert.deepEqual(codes, ['INTERVAL_LONG']);
+  assert.deepEqual(codes, ['INTERVAL_LONG', 'DOSE1_CLAMPED']);
 });
 
-test('경고: 07:00 검사 → EARLY_MORNING (2차 03:30)', () => {
+test('경고: 07:00 검사 → EARLY_MORNING (2차 03:30) + DOSE1_CLAMPED', () => {
   const { warnings, meta } = run(at(2026, 9, 10, 7, 0), 'coolprep');
   assert.equal(hm(meta.dose2Start), '03:30');
-  assert.deepEqual(warnings.map((w) => w.code), ['EARLY_MORNING']);
+  assert.deepEqual(warnings.map((w) => w.code), ['EARLY_MORNING', 'DOSE1_CLAMPED']);
   assert.ok(warnings[0].message.includes('03:30'));
 });
 
-test('경고: 05:00 검사 → EARLY_MORNING + ODD_TIME', () => {
+test('경고: 05:00 검사 → EARLY_MORNING + ODD_TIME + DOSE1_CLAMPED', () => {
   const codes = run(at(2026, 9, 10, 5, 0), 'coolprep').warnings.map((w) => w.code).sort();
-  assert.deepEqual(codes, ['EARLY_MORNING', 'ODD_TIME']);
+  assert.deepEqual(codes, ['DOSE1_CLAMPED', 'EARLY_MORNING', 'ODD_TIME']);
 });
 
-test('경고: 과거 검사 → PAST만 (TOO_SOON 중복 없음)', () => {
+test('경고: 과거 검사 → PAST만 (TOO_SOON 중복 없음, clamp 없음)', () => {
   const codes = run(at(2026, 8, 30, 9, 0), 'coolprep').warnings.map((w) => w.code);
   assert.deepEqual(codes, ['PAST']);
 });
 
-test('경고: 2차 시작이 이미 지난 임박 검사 → TOO_SOON', () => {
+test('경고: 2차 시작이 이미 지난 임박 검사 → TOO_SOON + DOSE1_CLAMPED', () => {
   const codes = run(at(2026, 9, 1, 14, 0), 'coolprep', at(2026, 9, 1, 11, 0)).warnings.map((w) => w.code);
-  assert.deepEqual(codes, ['TOO_SOON']);
+  assert.deepEqual(codes, ['TOO_SOON', 'DOSE1_CLAMPED']);
+});
+
+test('경고: DOSE1_CLAMPED 메시지에 조정 범위와 안내 문구가 들어간다', () => {
+  const { warnings } = run(at(2026, 9, 10, 14, 0), 'coolprep');
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, 'DOSE1_CLAMPED');
+  assert.ok(warnings[0].message.includes('18:00'));
+  assert.ok(warnings[0].message.includes('22:00'));
+  assert.ok(warnings[0].message.includes('병원에서 안내받은 시각과 다를 수 있습니다'));
 });
 
 test('잘못된 입력은 throw', () => {
