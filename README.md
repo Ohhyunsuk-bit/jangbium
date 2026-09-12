@@ -27,6 +27,22 @@
 - `js/vendor/qrcode.js` — 벤더링한 QR 인코더(MIT, 손으로 고치지 않음).
 - `index.html`, `coolprep.html`, `orapang.html`, `plenvu.html`, `plan.html`, `recall.html`, `recall-plan.html`
 
+## 도구 (배포 대상 아님)
+
+- `tools/batch-prep.mjs` — 예약 명단 CSV(이름·제품·검사일시) → 환자별 복용 안내문 `.txt` 일괄 생성. 접수 데스크가 문자 발송 시스템에 복붙할 때 쓴다. `js/schedule.js`·`protocols.js`를 그대로 재사용해 웹앱과 문구가 항상 일치한다. 사용: `node tools/batch-prep.mjs 예약명단.csv`
+
+## 예정 — 환자 포털 (개원 후)
+
+검사 전 안내(현재 장비움) → 검사 결과 → 다음 방문(추적검사 계산기) → 생활습관 관리를 환자가 로그인해서 한 화면에서 보고, 재방문으로 이어지게 만드는 포털. 2026-09-10에 화면 디자인만 확정해 둔 상태(실제 로그인·서버·데이터 저장 없음):
+
+- 확정 목업: `tools/mockups/portal-a-warm3.html` (카드형 구조 + 료칸 로비 무드 — 어두운 우드톤, 여러 지점의 은은한 조명, 저조도 입자감)
+- 과정 기록: `tools/mockups/portal-a.html`·`portal-b.html`(구조 시안), `portal-a-warm.html`·`portal-a-warm2.html`(디자인 과정)
+
+실제로 만들려면 개원 시점에 먼저 정해야 할 것:
+1. 환자를 어떻게 식별할지 (이름+생년월일? 예약번호?)
+2. 검사 결과를 누가 언제 입력할지 (간호사 직접 입력? EMR 연동?)
+3. 이런 기록을 어디에 안전하게 영속화할지 (localStorage 단독 금지 — CLAUDE.md 데이터 영속성 규칙)
+
 ## 규칙 요약
 
 - 2차 복용 완료 = 검사 2시간 전. 1차 시작 = 2차 시작 − 11시간, 전날 18:00~22:00 범위.
